@@ -25,7 +25,11 @@ export class TodoService {
   }
 
   private extractData(res: Response) {
-    return res.json();
+    return res.json().map(function(todo){
+        todo.created = new Date(todo.created).toDateString();
+        return todo;
+    });
+
   }
   private handleError (error: any) {
     let errMsg = error.message || error.statusText || 'Server error';

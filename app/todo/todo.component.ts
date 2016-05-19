@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TodoService} from '../common/todo.service';
 import {AlertComponent} from 'ng2-bootstrap/ng2-bootstrap';
 import {Todo} from '../common/todo.model'
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'todo',
@@ -11,9 +12,11 @@ import {Todo} from '../common/todo.model'
   </div>
   <hr>
   <ul class="list-group">
-    <li *ngFor="let todo of todos" class="list-group-item">
+    <li *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
+      <span>{{ todo.note}} </span>
+      <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
       <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
-      {{todo.created}}
+
     </li>
   </ul>
   New Todo:
@@ -29,22 +32,22 @@ import {Todo} from '../common/todo.model'
 })
 
 export class TodoComponent implements OnInit {
-  constructor (private todoService: TodoService) {}
+  constructor(private todoService: TodoService) { }
   errorMessage: string;
-  todos:Todo[];
+  todos: Todo[];
   ngOnInit() { this.getTodos(); }
   getTodos() {
     this.todoService.getTodos()
-                     .subscribe(
-                       todos => this.todos = todos,
-                       error =>  this.errorMessage = error);
+      .subscribe(
+      todos => this.todos = todos,
+      error => this.errorMessage = error);
   }
-  addTodo (note: string, priority: number, status: string) {
+  addTodo(note: string, priority: number, status: string) {
     if (!note && !priority && !status) { return; }
     this.todoService.addTodo(note, priority, status)
-                     .subscribe(
-                       hero  => this.todos.push(hero),
-                       error =>  this.errorMessage = error);
+      .subscribe(
+      hero => this.todos.push(hero),
+      error => this.errorMessage = error);
   }
 }
 
