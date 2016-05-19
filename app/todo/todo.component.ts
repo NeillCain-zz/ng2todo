@@ -10,19 +10,20 @@ import {Todo} from '../common/todo.model'
     <h1>Ma Todo Synch</h1>
   </div>
   <hr>
-  <ul>
-  <li *ngFor="let todo of todos">
-    {{todo.created}}
-  </li>
-</ul>
-New Todo:
-<input placeholder="NOTE" #note />
-<input placeholder="PRIORITY" #priority />
-<input placeholder="STATUS" #status />
-<button (click)="addTodo(note.value, priority.value, status.value);">
-  Add Todo
-</button>
-<div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
+  <ul class="list-group">
+    <li *ngFor="let todo of todos" class="list-group-item">
+      <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
+      {{todo.created}}
+    </li>
+  </ul>
+  New Todo:
+  <input placeholder="NOTE" #note />
+  <input placeholder="PRIORITY" #priority />
+  <input placeholder="STATUS" #status />
+  <button (click)="addTodo(note.value, priority.value, status.value);">
+    Add Todo
+  </button>
+  <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
   directives: [AlertComponent],
   providers: [TodoService]
 })
