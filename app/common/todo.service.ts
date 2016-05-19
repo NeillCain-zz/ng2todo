@@ -9,7 +9,9 @@ export class TodoService {
   constructor (private http: Http) {}
   private todoUrl = 'http://todo.kungfoobar.me/todo';
   getTodos (): Observable<Todo[]> {
-    return this.http.get(this.todoUrl)
+    let headers = new Headers();
+    headers.append('If-None-Match', '715347285830');
+    return this.http.get(this.todoUrl, {headers})
                     .map(this.extractData)
                     .catch(this.handleError);
   }
@@ -28,7 +30,10 @@ export class TodoService {
     return res.json().map(function(todo){
         todo.created = new Date(todo.created).toDateString();
         return todo;
-    });
+    })
+    .sort(function(a, b) {
+      return a.priority - b.priority;
+});
 
   }
   private handleError (error: any) {
