@@ -8,7 +8,7 @@ import {AddTodoComponent} from './addtodo.component'
   selector: 'todo',
   template: `
   <div class="page-header m-t-1">
-    <h1>Ma Todo Synch</h1>
+    <h1>{{title}}}</h1>
   </div>
   <hr>
   <ul class="list-group">
@@ -26,9 +26,13 @@ import {AddTodoComponent} from './addtodo.component'
 
 export class TodoComponent implements OnInit {
   constructor(private todoService: TodoService) { }
+  title: string
   errorMessage: string;
   todos: Todo[];
-  ngOnInit() { this.getTodos(); }
+  ngOnInit() {
+    this.getTodos();
+    this.title = 'Todo List'
+  }
   getTodos() {
     this.todoService.getTodos()
       .subscribe(
