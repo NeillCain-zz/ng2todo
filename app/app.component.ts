@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {Routes, ROUTER_DIRECTIVES} from '@angular/router';
 import {AboutComponent} from './about/about.component';
 import {TodoComponent} from './todo/todo.component';
-import {HomeComponent} from './home/home.component';
 import {StateService} from './common/state.service';
 
 @Component({
@@ -22,17 +21,14 @@ import {StateService} from './common/state.service';
           </button>
       <div class="collapse navbar-toggleable-xs" id="exCollapsingNavbar2">
         <h1 id="logo">
-          <a class="navbar-brand" [routerLink]="['/home']"></a>
+          <a class="navbar-brand" [routerLink]="['/']"></a>
         </h1>
         <ul class="nav navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/home']">Home <span class="sr-only">(current)</span></a>
+        <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/todo']">Todo</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['/about']">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/todo']">Todo</a>
           </li>
         </ul>
       </div>
@@ -49,40 +45,38 @@ import {StateService} from './common/state.service';
     <span class="text-muted">Place sticky footer content here.</span>
   </div>
 </footer>
-  `,
-  styles: [`
-  h1#logo a {
-    background: url(../images/logo.png) no-repeat top left;
-    width: 194px;
-    height: 48px;
-    margin: 8px;
-    display: block;
-    text-indent: -9999px;
-  }
+  `,styles: [`
+h1#logo a {
+  background: url(../images/logo.png) no-repeat top left;
+  width: 194px;
+  height: 48px;
+  margin: 8px;
+  display: block;
+  text-indent: -9999px;
+}
 
-  .nav-item .router-link-active {
-    color: #06c;
-  }
-  .footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 40px;
-    background-color: #60c;
-  }
+.nav-item .router-link-active {
+  color: #06c;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background-color: #60c;
+}
 
-  .foo {
-    padding-top: 70px;
-  }
+.foo {
+  padding-top: 70px;
+}
   `],
-  directives: [ ROUTER_DIRECTIVES ],
+  directives: [ROUTER_DIRECTIVES],
   providers: [StateService],
 })
 @Routes([
-  {path: '/',            component: HomeComponent },
-  {path: '/home',        component: HomeComponent },
-  {path: '/about',       component: AboutComponent },
-  {path: '/todo',        component: TodoComponent },
-  {path: '/*',           component: HomeComponent }
+  { path: '/', component: TodoComponent },
+  { path: '/about', component: AboutComponent },
+  { path: '/todo', component: TodoComponent },
+  { path: '/*', component: TodoComponent }
 ])
-export class AppComponent {}
+export class AppComponent { }
