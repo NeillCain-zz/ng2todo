@@ -3,20 +3,22 @@ import {StateService} from '../common/state.service';
 
 @Component({
   selector: 'about',
-  template: require('./about.component.html')
+  template: `
+  <h1>{{ title }}</h1>
+  <hr>
+  <div>
+    <h2 class="text-error">Current Etag: {{ currentEtag }}</h2>
+    <p>This is used as synching mechanism...</p>
+  </div>
+  `
 })
 export class AboutComponent implements OnInit{
-  title: string = 'About Page';
-  body:  string = 'This is the about page body';
-  message: string;
+  title: string = 'About ma Etag';
+  currentEtag: string;
 
   constructor(public _stateService: StateService) { }
 
   ngOnInit() {
-    this.message = this._stateService.getMessage();
-  }
-
-  updateMessage(m: string): void {
-    this._stateService.setMessage(m);
+    this.currentEtag = this._stateService.getEtag();
   }
 }
