@@ -1,20 +1,25 @@
 import {Control, FORM_DIRECTIVES} from '@angular/common';
 import {Component, Output, Input, EventEmitter} from '@angular/core';
+import {Todo} from '../common/todo.model';
 import {Observable} from 'rxjs/Rx';
+import {EditTodoComponent} from './todoEdit.component'
 
 @Component({
 	selector: 'todo-search',
-	directives: [FORM_DIRECTIVES],
+	directives: [FORM_DIRECTIVES, EditTodoComponent],
 	template: `
 	<input [ngFormControl]="skipBox" placeholder="SKIP" />
   <input [ngFormControl]="takeBox" placeholder="TAKE" />
 	<ul class="list-group">
-    <li *ngFor="let todo of results | async" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
+    <li (click)="onSelect(todo)" *ngFor="let todo of results | async" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
       <span>{{todo.note}} </span>
+      <span class="label label-default label-pill pull-xs-right">{{todo.status}} </span>
       <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
       <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
     </li>
   </ul>
+	<hr>
+	<todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
 	`
 })
 export class TodoSearchComponent {
@@ -25,6 +30,8 @@ export class TodoSearchComponent {
 
   @Input() results:Observable<any>;
   @Output() searchEvent: EventEmitter<any> = new EventEmitter();
+
+	selectedTodo: Todo;
 
   constructor() {
 		this.skipBox.valueChanges.subscribe((value) => {
@@ -38,4 +45,13 @@ export class TodoSearchComponent {
 			this.searchEvent.emit({skip: this.skip, take: this.take})
 		});
   }
+
+	onEditDone(foo: any){
+		this.selectedTodo = undefined;
+	}
+
+	onSelect(todo: Todo){
+		console.log('ffs');
+		this.selectedTodo = todo;
+	}
 }

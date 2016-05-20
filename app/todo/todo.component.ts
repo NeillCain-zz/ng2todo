@@ -31,7 +31,7 @@ export class TodoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.onSearch({skip: 0, take: 10});
+    this.onSearch({skip: 0, take: 2});
     this.title = 'Todo List'
   }
 

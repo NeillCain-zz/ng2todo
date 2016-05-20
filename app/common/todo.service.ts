@@ -35,6 +35,16 @@ export class TodoService {
       .catch(this.handleError);
   }
 
+  edit(todo: Todo){
+    let body = JSON.stringify(todo);
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    headers.append('If-Match', todo.revision);
+    let options = new RequestOptions({ headers: headers });
+    return this.http.put(this.todoUrl + `/${todo.id}`, body, options)
+      .map(() => todo)
+      .catch(this.handleError);
+  }
+
   private cacheData(res: Response) {
     let todos = res.json();
     this.stateService.setEtag(res.headers.get('ETag') || '');
@@ -47,6 +57,8 @@ export class TodoService {
     return todos.slice(skip, take)
       .map(function (todo) {
         todo.created = new Date(todo.created).toDateString();
+        todo.revision = todo['_rev'];
+        todo.id = todo['_key'];
         return todo;
       })
       .sort(function (a, b) {
