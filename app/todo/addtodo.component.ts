@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { Control, FORM_DIRECTIVES, NgClass} from '@angular/common';
 import {TodoService} from '../common/todo.service';
 import {AlertComponent} from 'ng2-bootstrap/ng2-bootstrap';
 import {Todo} from '../common/todo.model'
@@ -25,6 +26,8 @@ import {Todo} from '../common/todo.model'
 })
 
 export class AddTodoComponent {
+    private skip:Control = new Control();
+    private take:Control = new Control();
     constructor(private todoService: TodoService) { }
     public alerts: Array<Object> = [];
 

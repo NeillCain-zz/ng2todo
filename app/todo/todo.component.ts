@@ -1,43 +1,45 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output, Input, EventEmitter} from '@angular/core';
+import {Control, FORM_DIRECTIVES, NgClass} from '@angular/common';
 import {TodoService} from '../common/todo.service';
 import {Todo} from '../common/todo.model'
-import { NgClass } from '@angular/common';
 import {AddTodoComponent} from './addtodo.component'
+import {TodoSearchComponent } from './todoSearch.component'
+import {Observable, Observer} from 'rxjs/Rx';
 
 @Component({
   selector: 'todo',
   template: `
   <div class="page-header m-t-1">
-    <h1>{{title}}}</h1>
+    <h1>{{title}}</h1>
   </div>
   <hr>
-  <ul class="list-group">
-    <li *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
-      <span>{{ todo.note}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
-    </li>
-  </ul>
+  <todo-search (searchEvent)="onSearch($event)" [results]="data"></todo-search>
   <addtodo></addtodo>
   <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
   providers: [TodoService],
-  directives: [AddTodoComponent]
+  directives: [AddTodoComponent, TodoSearchComponent, FORM_DIRECTIVES]
 })
 
 export class TodoComponent implements OnInit {
-  constructor(private todoService: TodoService) { }
+  private data:Observable<any>;
+  private dataObserver:Observer<any>;
   title: string
   errorMessage: string;
-  todos: Todo[];
+
+  constructor(private todoService: TodoService) {
+    this.data = new Observable(observer => this.dataObserver = observer);
+  }
+
   ngOnInit() {
-    this.getTodos();
+    this.onSearch({skip: 0, take: 10});
     this.title = 'Todo List'
   }
-  getTodos() {
-    this.todoService.getTodos()
-      .subscribe(
-      todos => this.todos = todos,
-      error => this.errorMessage = error);
-  }
-}
 
+  onSearch(event) {
+    console.log('onSearch Event', event)
+    this.todoService.getTodos(event.skip, event.take)
+	  .subscribe(result => {
+	   this.dataObserver.next(result);
+	 }, error => this.errorMessage = error);
+	}
+}

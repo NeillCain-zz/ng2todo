@@ -1,19 +1,27 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import {Todo} from './todo.model';
+import { Todo } from './todo.model';
 import { Observable } from 'rxjs/Rx';
 import { Headers, RequestOptions } from '@angular/http';
+import { StateService } from './state.service'
 
 @Injectable()
 export class TodoService {
-  constructor(private http: Http) { }
+  constructor(private http: Http, private stateService: StateService) { }
   private todoUrl = 'http://todo.kungfoobar.me/todo';
-  getTodos(): Observable<Todo[]> {
+
+  getTodos(skip: number, take: number): Observable<Todo[]> {
+    let todos = this.stateService.getTodos();
+    if(todos.length > 0){
+      console.log('todo from cache', todos);
+      return Observable.from(this.queryTodos(todos, skip, take), (x) => x).toArray();
+    }
     let headers = new Headers();
-    headers.append('If-None-Match', '715347285830');
+    headers.append('If-None-Match', this.stateService.getEtag());
     return this.http.get(this.todoUrl, { headers })
-      .map(this.extractData)
-      .catch(this.handleError);
+      .map(res=>this.cacheData(res))
+      .map(todos=>this.queryTodos(todos, skip, take))
+      .catch(err=>this.handleError(err));
   }
 
   addTodo(note: string, priority: number, status: string): Observable<Todo> {
@@ -27,8 +35,16 @@ export class TodoService {
       .catch(this.handleError);
   }
 
-  private extractData(res: Response) {
-    return res.json().slice(20, 30)
+  private cacheData(res: Response) {
+    let todos = res.json();
+    this.stateService.setEtag(res.headers.get('ETag') || '');
+    this.stateService.setTodos(todos);
+    console.log('cacheData', todos);
+    return todos;
+  }
+
+  private queryTodos(todos: any, skip: number, take: number){
+    return todos.slice(skip, take)
       .map(function (todo) {
         todo.created = new Date(todo.created).toDateString();
         return todo;
