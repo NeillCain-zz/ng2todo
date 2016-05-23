@@ -1,27 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Todo } from './todo.model';
-import { Observable } from 'rxjs/Rx';
+import { ReplaySubject, Observable } from "rxjs/Rx";
 import { Headers, RequestOptions } from '@angular/http';
 import { StateService } from './state.service'
 
 @Injectable()
 export class TodoService {
-  constructor(private http: Http, private stateService: StateService) { }
   private todoUrl = 'http://todo.kungfoobar.me/todo';
-
+  private _todos: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
+  
+  constructor(private http: Http, private stateService: StateService) { }
+    
   getTodos(skip: number, take: number): Observable<Todo[]> {
+    this._todos = this._todos.isUnsubscribed ? new ReplaySubject<Todo[]>() : this._todos;
     let todos = this.stateService.getTodos();
     if(todos.length > 0){
-      console.log('todo from cache', todos);
-      return Observable.from(this.queryTodos(todos, skip, take), (x) => x).toArray();
+      todos = this.queryTodos(todos, skip, take)      
+      this._todos.next(todos);            
     }
-    let headers = new Headers();
-    headers.append('If-None-Match', this.stateService.getEtag());
-    return this.http.get(this.todoUrl, { headers })
-      .map(res=>this.cacheData(res))
-      .map(todos=>this.queryTodos(todos, skip, take))
-      .catch(err=>this.handleError(err));
+    else{
+      let headers = new Headers();
+      headers.append('If-None-Match', this.stateService.getEtag());
+      if (!this._todos.observers.length) {
+            this.http.get(this.todoUrl)
+              .subscribe(
+                res => {
+                  let todos = this.cacheData(res)
+                  todos = this.queryTodos(todos, skip, take)
+                  this._todos.next(todos);
+                },
+                error => this._todos.error(error));
+        }            
+    }
+    return this._todos;
   }
 
   addTodo(note: string, priority: number, status: string): Observable<Todo> {
@@ -48,8 +60,7 @@ export class TodoService {
   private cacheData(res: Response) {
     let todos = res.json();
     this.stateService.setEtag(res.headers.get('ETag') || '');
-    this.stateService.setTodos(todos);
-    console.log('cacheData', todos);
+    this.stateService.setTodos(todos);    
     return todos;
   }
 

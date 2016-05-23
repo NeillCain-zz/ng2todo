@@ -11,7 +11,7 @@ import {EditTodoComponent} from './todoEdit.component'
 	<input [ngFormControl]="skipBox" placeholder="SKIP" />
   <input [ngFormControl]="takeBox" placeholder="TAKE" />
 	<ul class="list-group">
-    <li (click)="onSelect(todo)" *ngFor="let todo of results | async" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
+    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
       <span>{{todo.note}} </span>
       <span class="label label-default label-pill pull-xs-right">{{todo.status}} </span>
       <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
@@ -28,19 +28,17 @@ export class TodoSearchComponent {
 	private skip:number = 0;
 	private take:number = 10;
 
-  @Input() results:Observable<any>;
+  @Input() todos:Todo[];
   @Output() searchEvent: EventEmitter<any> = new EventEmitter();
 
 	selectedTodo: Todo;
 
   constructor() {
-		this.skipBox.valueChanges.subscribe((value) => {
-			console.log('skipBox Event', value)
+		this.skipBox.valueChanges.debounceTime(1000).subscribe((value) => {			
 			this.skip = value;
 			this.searchEvent.emit({skip: this.skip, take: this.take});
 		});
-    this.takeBox.valueChanges.subscribe((value) => {
-			console.log('takeBox Event', value)
+    this.takeBox.valueChanges.debounceTime(1000).subscribe((value) => {			
 			this.take = value;
 			this.searchEvent.emit({skip: this.skip, take: this.take})
 		});
@@ -50,8 +48,7 @@ export class TodoSearchComponent {
 		this.selectedTodo = undefined;
 	}
 
-	onSelect(todo: Todo){
-		console.log('ffs');
+	onSelect(todo: Todo){		
 		this.selectedTodo = todo;
 	}
 }

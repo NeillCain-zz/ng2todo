@@ -13,7 +13,7 @@ import {Observable, Observer} from 'rxjs/Rx';
     <h1>{{title}}</h1>
   </div>
   <hr>
-  <todo-search (searchEvent)="onSearch($event)" [results]="data"></todo-search>
+  <todo-search (searchEvent)="onSearch($event)" [todos]="todos"></todo-search>
   <addtodo></addtodo>
   <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
   providers: [TodoService],
@@ -21,13 +21,12 @@ import {Observable, Observer} from 'rxjs/Rx';
 })
 
 export class TodoComponent implements OnInit {
-  private data:Observable<any>;
-  private dataObserver:Observer<any>;
   title: string
   errorMessage: string;
+  
+  public todos :Todo[] = []
 
   constructor(private todoService: TodoService) {
-    this.data = new Observable(observer => this.dataObserver = observer);
   }
 
   ngOnInit() {
@@ -36,10 +35,10 @@ export class TodoComponent implements OnInit {
   }
 
   onSearch(event) {
-    console.log('onSearch Event', event)
     this.todoService.getTodos(event.skip, event.take)
-	  .subscribe(result => {
-	   this.dataObserver.next(result);
-	 }, error => this.errorMessage = error);
+	  .subscribe(result => {      
+      this.todos = result;
+    }  
+	 , error => this.errorMessage = error);
 	}
 }
