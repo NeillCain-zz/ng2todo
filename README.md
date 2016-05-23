@@ -1,22 +1,38 @@
-# Building an Angular 2 Website Using Routes
-This is a simple Angular 2 website using the brand new router. It demonstrates how to build components, configure routes, inject services, and use the `@Input` decorator to bind properties to components.
+# CW Todo List ng2!
+
+This simple Angular 2 Todo list app is using the brand new router. 
+
+It demonstrates how to build components, configure routes, inject services, and use the `@Input` decorator to bind properties to components.
+
+We're using it as the client app to consume our sycnhrinsation service...
+
+Todo:
+
+- add sockety goodness to invoke cache update using the If-None-Match http headers 
 
 ## Dependencies
 - You must have `node v >= 4.0` and `npm` installed (via `brew install node` or [NodeJS.org](https://nodejs.org/en/));
-- `npm i -g typings webpack-dev-server webpack rimraf`
+- `npm i -g typings webpack-dev-server webpack rimraf opn-cli http-server`
 
-## Getting Started
-
-
+## Install stuff
 ```bash
-git clone https://github.com/onehungrymind/fem-ng2-simple-app.git
-cd fem-ng2-simple-app
 npm i
-typings install
+typings install 
+```
+## Run and serve dev
+_will run webpack-dev-server and reload on change [runs --hot ;)]_
+```bash
 npm start
+``` 
+
+## Run and serve prod build
+```bash
+`serve-build`
 ```
 
-Then navigate your browser to http://localhost:3001 and use the app.
+Both will open your browser on the necessary localhost port.
 
 ## Testing
 The test setup includes `webpack.test.config.js`, `spec-bundle.js`, and `karma.conf.js`. To run unit tests, execute `npm test` in your terminal.
+
+Note that `serve-build` will run tests prior to build

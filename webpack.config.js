@@ -1,6 +1,7 @@
 var webpack = require('webpack'),
-    path = require('path');
-
+    path = require('path'),
+    HtmlWebpackPlugin = require('html-webpack-plugin');
+    
 function root(args) {
   args = Array.prototype.slice.call(arguments, 0);
   return path.join.apply(path, [__dirname].concat(args));
@@ -26,6 +27,9 @@ module.exports = {
       { test: /\.(html|css)$/, loader: 'raw-loader' }
     ]
   },
+  plugins: [new HtmlWebpackPlugin(
+    {title: 'Craneware Todo List', template: 'index.html'}
+  )],
   devServer: {
     historyApiFallback: true
   }
