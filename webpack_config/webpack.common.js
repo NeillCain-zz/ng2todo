@@ -19,7 +19,7 @@ module.exports = {
             exclude: [/\.(spec|e2e)\.ts$/]
         }, {
             test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-            loader: 'file?name=assets/[name].[hash].[ext]'
+            loader: 'file?name=images/[name].[ext]'
         }, {
             test: /\.css$/,
             exclude: helpers.root('app'),

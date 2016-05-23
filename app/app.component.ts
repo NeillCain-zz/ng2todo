@@ -4,6 +4,8 @@ import {AboutComponent} from './about/about.component';
 import {TodoComponent} from './todo/todo.component';
 import {StateService} from './common/state.service';
 
+import '../images/logo.png'
+
 @Component({
   selector: 'app',
   template: `
