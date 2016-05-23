@@ -12,7 +12,13 @@ Todo:
 
 ## Dependencies
 - You must have `node v >= 4.0` and `npm` installed (via `brew install node` or [NodeJS.org](https://nodejs.org/en/));
-- `npm i -g typings webpack-dev-server webpack rimraf opn-cli http-server`
+- `npm i -g typings webpack-dev-server webpack rimraf http-server`
+
+-phantomjs installed locally:
+    1. Install [phantomJS](http://phantomjs.org/download.html)
+    2. Extract to `C:\phantomjs`
+    3. Add the following to OS path env variable- `C:\phantomjs\bin;`
+    4. `which phantomjs` check it's installed and at right location
 
 ## Install stuff
 ```bash
@@ -24,6 +30,7 @@ _will run webpack-dev-server and reload on change [runs --hot ;)]_
 ```bash
 npm start
 ``` 
+**waiting for webpack dev server [in beta currently] to firm up for more options like [opening browser window](https://github.com/webpack/webpack-dev-server/issues/311)**     
 
 ## Run and serve prod build
 ```bash
