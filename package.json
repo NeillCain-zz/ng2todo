@@ -10,7 +10,7 @@
     "start": "webpack-dev-server --inline --colors --watch --display-error-details --display-cached  --port 3001 --hot",
     "test": "karma start",
     "build": "rm -rf public && webpack -p --config webpack_config/webpack.prod.js",
-    "serve-build": "npm run build && http-server ./public  -p 8000 -o"
+    "serve-build": "npm run build && node server.js"
   },
   "dependencies": {
     "node-static": "^0.7.7"
