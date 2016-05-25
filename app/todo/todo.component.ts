@@ -13,7 +13,7 @@ import {Observable, Observer} from 'rxjs/Rx';
     <h1>{{title}}</h1>
   </div>
   <hr>
-  <todo-search (searchEvent)="onSearch($event)" [todos]="todos"></todo-search>
+  <todo-search [todos]="todos"></todo-search>
   <addtodo></addtodo>
   <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
   providers: [TodoService],
@@ -21,34 +21,25 @@ import {Observable, Observer} from 'rxjs/Rx';
 })
 
 export class TodoComponent implements OnInit {
-  @ViewChild(TodoSearchComponent) todoSearchComponent: TodoSearchComponent
-  title: string
-  errorMessage: string;
-  private foobar: Observable<Todo[]>
-
-  public todos :Todo[] = []
+  @ViewChild(TodoSearchComponent) todoSearchComponent: TodoSearchComponent;
+  private title: string;
+  private errorMessage: string;
+  private todos :Todo[] = [];
 
   constructor(private todoService: TodoService) {
   }
 
   ngOnInit() {
-    this.onSearch({skip: 0, take: 2});
     this.title = 'Todo List'
-    this.foobar = this.todoService.getTodos(0, 5)
   }
 
   ngAfterViewInit() {
-    this.todoSearchComponent.searchEvent.subscribe(foobar =>{
-      console.log('foobar', foobar);
-    });
-  }
-
-  onSearch(event) {
-    this.todoService.getTodos(event.skip, event.take)
-	  .subscribe(result => {
+    this.todoSearchComponent.searchEvent
+      .flatMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
+    .subscribe(result => {
       console.log('result', result);
       this.todos = result;
     }
 	 , error => this.errorMessage = error);
-	}
+  }
 }
