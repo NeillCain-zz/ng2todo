@@ -1,3 +1,5 @@
 typings
 node_modules
-public
+app
+images
+global_styles
