@@ -5,6 +5,7 @@ import {Todo} from '../common/todo.model'
 import {AddTodoComponent} from './addtodo.component'
 import {TodoSearchComponent } from './todoSearch.component'
 import {Observable, Observer} from 'rxjs/Rx';
+import * as sio from 'socket.io-client';
 
 @Component({
   selector: 'todo',
@@ -24,22 +25,26 @@ export class TodoComponent implements OnInit {
   @ViewChild(TodoSearchComponent) todoSearchComponent: TodoSearchComponent;
   private title: string;
   private errorMessage: string;
-  private todos :Todo[] = [];
+  private todos: Todo[] = [];
+  private socket: SocketIOClient.Socket;
 
   constructor(private todoService: TodoService) {
   }
 
   ngOnInit() {
     this.title = 'Todo List'
+    this.socket = sio.connect('ws://todo.kungfoobar.me');
+    this.socket.on('post', data => console.log(data))
+    this.socket.on('put', data => console.log(data))
   }
 
   ngAfterViewInit() {
     this.todoSearchComponent.searchEvent
       .flatMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
-    .subscribe(result => {
-      console.log('result', result);
-      this.todos = result;
-    }
-	 , error => this.errorMessage = error);
+      .subscribe(result => {
+        console.log('result', result);
+        this.todos = result;
+      }
+      , error => this.errorMessage = error);
   }
 }
