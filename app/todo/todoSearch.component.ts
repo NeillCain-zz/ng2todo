@@ -33,22 +33,17 @@ export class TodoSearchComponent {
 
 	selectedTodo: Todo;
 
-  constructor() {
-		this.skipBox.valueChanges.debounceTime(1000).subscribe((value) => {			
-			this.skip = value;
-			this.searchEvent.emit({skip: this.skip, take: this.take});
-		});
-    this.takeBox.valueChanges.debounceTime(1000).subscribe((value) => {			
-			this.take = value;
-			this.searchEvent.emit({skip: this.skip, take: this.take})
-		});
+	constructor() {
+		this.skipBox.valueChanges
+			.combineLatest(this.takeBox.valueChanges, (skip, take) => ({skip, take}))
+			.subscribe(x => this.searchEvent.emit(x));
   }
 
 	onEditDone(foo: any){
 		this.selectedTodo = undefined;
 	}
 
-	onSelect(todo: Todo){		
+	onSelect(todo: Todo){
 		this.selectedTodo = todo;
 	}
 }
