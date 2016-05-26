@@ -1,0 +1,9 @@
+--clone repo on [docker-machhine] and then while on docker-machine
+npm i
+npm build
+docker build -t ng2todo .
+-- get newly built docker image id by
+docker images [find id in list]
+docker tag <id of image> neillcain/ng2todo:0.0.2 [<repo>/<tag>:<version>]
+-- login to docker hub [on doze you have to use --username=<username> AND --password=<password> - I know, secure]
+docker push neillcain/ng2todo [<repo>/<tag>] - assume this will upload multiple tags if you have them
