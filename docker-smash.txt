@@ -1,6 +1,7 @@
 --clone repo on [docker-machhine] and then while on docker-machine
 npm i
-npm build
+typings install
+npm run build
 docker build -t ng2todo .
 -- get newly built docker image id by
 docker images [find id in list]
