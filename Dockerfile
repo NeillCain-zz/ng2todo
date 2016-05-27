@@ -1,4 +1,4 @@
-FROM node:4-onbuild
+FROM mhart/alpine-node
 
 COPY package.json /src/package.json
 RUN cd /src && npm i --production
