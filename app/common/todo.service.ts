@@ -40,6 +40,7 @@ export class TodoService {
   }
 
   getTodos(skip: number, take: number): Observable<Todo[]> {
+    console.log('get todos');
     this._todos = this._todos.isUnsubscribed ? new ReplaySubject<Todo[]>(1) : this._todos;
     let todos = this.stateService.getTodos();
     if (todos.length > 0 && !this.reload) {

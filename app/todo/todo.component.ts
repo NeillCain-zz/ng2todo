@@ -17,8 +17,8 @@ import 'ng2-toasty/ng2-toasty.css';
     <h1>{{title}}</h1>
   </div>
   <hr>
-  <todo-search [todos]="todos"></todo-search>
   <addtodo></addtodo>
+  <todo-search [todos]="todos"></todo-search>
   <ng2-toasty></ng2-toasty>
   <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
   directives: [AddTodoComponent, TodoSearchComponent, FORM_DIRECTIVES, Toasty]
