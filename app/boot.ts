@@ -3,7 +3,6 @@ import { enableProdMode } from '@angular/core';
 import { ROUTER_PROVIDERS } from '@angular/router';
 import { HTTP_PROVIDERS } from '@angular/http';
 import { ToastyService, ToastyConfig } from 'ng2-toasty/ng2-toasty';
-import { FooBarService } from './common/foobar.service'
 import { TodoService } from './common/todo.service'
 import { StateService } from './common/state.service';
 import { AppComponent } from './app.component';
@@ -19,7 +18,6 @@ bootstrap(AppComponent, [
   HTTP_PROVIDERS,
   ToastyService,
   ToastyConfig,
-  FooBarService,
   TodoService,
   StateService
 ]);

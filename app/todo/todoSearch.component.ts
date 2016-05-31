@@ -4,7 +4,6 @@ import {Todo} from '../common/todo.model';
 import {AddTodoComponent} from './addtodo.component'
 import {Observable} from 'rxjs/Rx';
 import {EditTodoComponent} from './todoEdit.component'
-import { FooBarService } from '../common/foobar.service'
 
 @Component({
 	selector: 'todo-search',
@@ -35,12 +34,10 @@ export class TodoSearchComponent {
 
 	selectedTodo: Todo;
 
-	constructor(private foobarService: FooBarService) {
+	constructor() {
 		this.skipBox.valueChanges
 			.combineLatest(this.takeBox.valueChanges, (skip, take) => ({skip, take}))
 			.subscribe(x => this.searchEvent.emit(x));
-			console.log('constructing TODO SEARCH component');
-			console.log('getFoo', foobarService.getFoo());
   }
 
 	onEditDone(foo: any){
