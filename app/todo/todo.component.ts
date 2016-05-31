@@ -4,6 +4,7 @@ import {TodoService} from '../common/todo.service';
 import {Todo} from '../common/todo.model'
 import {AddTodoComponent} from './addtodo.component'
 import {TodoSearchComponent } from './todoSearch.component'
+import {ToastyMessage} from '../common/toastyMessage.model'
 import {Observable, Observer} from 'rxjs/Rx';
 import { ToastyService, Toasty, ToastOptions, ToastData } from 'ng2-toasty/ng2-toasty';
 
@@ -39,9 +40,9 @@ export class TodoComponent implements OnInit {
 
   ngAfterViewInit() {
     this.toastie('initialised');
-    //this.todoService.cacheUpdatedEvent.subscribe(message => {
-      //this.toastie
-    //})
+    this.todoService.cacheUpdatedEvent.subscribe(notification => {
+      this.toastie(notification);
+    });
 
     this.todoSearchComponent.searchEvent
       .startWith({ take: 10, skip: 0 })
@@ -51,10 +52,10 @@ export class TodoComponent implements OnInit {
       this.cdr.detectChanges();
   }
 
-  private toastie(message: string) {
+  private toastie(notification) {
     let toastOptions: ToastOptions = {
-      title: 'Something happended on todo service',
-      msg: message,
+      title: 'Toastie',
+      msg: notification.message,
       showClose: true,
       timeout: 3000
     };

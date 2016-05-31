@@ -10,29 +10,28 @@ import * as sio from 'socket.io-client';
 @Injectable()
 export class TodoService {
   private todoUrl = 'http://todo.kungfoobar.me/todo';
+  private reload: boolean = false;
   private _todos: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
   private socket: SocketIOClient.Socket;
   @Output() cacheUpdatedEvent: EventEmitter<ToastyMessage> = new EventEmitter<ToastyMessage>();
 
   constructor(private http: Http, private stateService: StateService) {
-    console.log("constructing TodoService");
     this.socket = sio.connect('ws://todo.kungfoobar.me');
 
     this.socket.on('connect', data => {
-      console.log("socket connected", data);
+      console.log("socket connected");
     });
 
     this.socket.on('post', data => {
+      this.reload
       let currentEtag = this.stateService.getEtag();
-      //this.invalidateCache();
-      this.notify(`New Todo Created, refreshing cache from ETag ${currentEtag}`);
+      this.notify('New Todo Created, refreshing');
     });
 
     this.socket.on('put', data => {
-      console.log('PUT SOCKET', data);
+      this.reload = true;
       let currentEtag = this.stateService.getEtag();
-      //this.invalidateCache();
-      this.notify(`Todo Updated, refreshing cache from ETag ${currentEtag}`);
+      this.notify('Todo Updated, refreshing ');
     });
   }
 
@@ -43,17 +42,17 @@ export class TodoService {
   getTodos(skip: number, take: number): Observable<Todo[]> {
     this._todos = this._todos.isUnsubscribed ? new ReplaySubject<Todo[]>(1) : this._todos;
     let todos = this.stateService.getTodos();
-    if (todos.length > 0) {
+    if (todos.length > 0 && !this.reload) {
       todos = this.queryTodos(todos, skip, take)
       this._todos.next(todos);
     }
     else {
       let headers = new Headers();
-      headers.append('If-None-Match', this.stateService.getEtag());
       if (!this._todos.observers.length) {
         this.http.get(this.todoUrl)
           .subscribe(
           res => {
+            this.reload = false;
             let todos = this.cacheData(res)
             todos = this.queryTodos(todos, skip, take)
             this._todos.next(todos);
@@ -85,17 +84,13 @@ export class TodoService {
       .catch(this.handleError);
   }
 
-  private invalidateCache(){
-    this.stateService.setEtag('');
-    this.stateService.setTodos([]);
-  }
-
   private notify(message: string) {
     this.cacheUpdatedEvent.emit({message});
   }
 
   private cacheData(res: Response) {
     let todos = res.json();
+    console.log('CachData', todos);
     this.stateService.setEtag(res.headers.get('ETag') || '');
     this.stateService.setTodos(todos);
     return todos;
