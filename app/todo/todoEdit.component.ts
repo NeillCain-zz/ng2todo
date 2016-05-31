@@ -19,8 +19,7 @@ import {Todo} from '../common/todo.model'
         <strong>{{errorMessage}}</strong>
     </div>
     <hr>
-  `,
-    providers: [TodoService]
+  `
 })
 
 export class EditTodoComponent {

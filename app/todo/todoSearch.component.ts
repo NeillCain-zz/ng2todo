@@ -1,12 +1,14 @@
 import {Control, FORM_DIRECTIVES} from '@angular/common';
 import {Component, Output, Input, EventEmitter} from '@angular/core';
 import {Todo} from '../common/todo.model';
+import {AddTodoComponent} from './addtodo.component'
 import {Observable} from 'rxjs/Rx';
 import {EditTodoComponent} from './todoEdit.component'
+import { FooBarService } from '../common/foobar.service'
 
 @Component({
 	selector: 'todo-search',
-	directives: [FORM_DIRECTIVES, EditTodoComponent],
+	directives: [FORM_DIRECTIVES, EditTodoComponent, AddTodoComponent],
 	template: `
 	<input [ngFormControl]="skipBox" placeholder="SKIP" />
   <input [ngFormControl]="takeBox" placeholder="TAKE" />
@@ -33,10 +35,12 @@ export class TodoSearchComponent {
 
 	selectedTodo: Todo;
 
-	constructor() {
+	constructor(private foobarService: FooBarService) {
 		this.skipBox.valueChanges
 			.combineLatest(this.takeBox.valueChanges, (skip, take) => ({skip, take}))
 			.subscribe(x => this.searchEvent.emit(x));
+			console.log('constructing TODO SEARCH component');
+			console.log('getFoo', foobarService.getFoo());
   }
 
 	onEditDone(foo: any){

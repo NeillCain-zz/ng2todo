@@ -2,8 +2,6 @@ import {Component} from '@angular/core';
 import {Routes, ROUTER_DIRECTIVES} from '@angular/router';
 import {AboutComponent} from './about/about.component';
 import {TodoComponent} from './todo/todo.component';
-import {StateService} from './common/state.service';
-
 import '../images/logo.png'
 
 @Component({
@@ -72,8 +70,7 @@ h1#logo a {
   padding-top: 70px;
 }
   `],
-  directives: [ROUTER_DIRECTIVES],
-  providers: [StateService],
+  directives: [ROUTER_DIRECTIVES]
 })
 @Routes([
   { path: '/', component: TodoComponent },

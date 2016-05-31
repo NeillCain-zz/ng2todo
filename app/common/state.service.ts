@@ -6,6 +6,10 @@ export class StateService {
 	private etag = '';
   private todos: Todo[] = [];
 
+  constructor(){
+    console.log('constructing state service');
+  }
+
   getEtag(): string {
     return this.etag;
   };

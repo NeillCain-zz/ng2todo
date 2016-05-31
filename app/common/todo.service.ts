@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Output, EventEmitter } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Todo } from './todo.model';
+import { ToastyMessage } from './toastyMessage.model'
 import { ReplaySubject, Observable } from "rxjs/Rx";
 import { Headers, RequestOptions } from '@angular/http';
 import { StateService } from './state.service'
@@ -11,15 +12,32 @@ export class TodoService {
   private todoUrl = 'http://todo.kungfoobar.me/todo';
   private _todos: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
   private socket: SocketIOClient.Socket;
+  @Output() cacheUpdatedEvent: EventEmitter<ToastyMessage> = new EventEmitter<ToastyMessage>();
 
   constructor(private http: Http, private stateService: StateService) {
+    console.log("constructing TodoService");
     this.socket = sio.connect('ws://todo.kungfoobar.me');
+
+    this.socket.on('connect', data => {
+      console.log("socket connected", data);
+    });
+
     this.socket.on('post', data => {
-      //this.toastie(data) -- NEED TO EMIT AN EVENT HERE FOR ANY UI PROMPTS TO BE RENDERED OUT BY COMPONENT
-    })
+      let currentEtag = this.stateService.getEtag();
+      //this.invalidateCache();
+      this.notify(`New Todo Created, refreshing cache from ETag ${currentEtag}`);
+    });
+
     this.socket.on('put', data => {
-      //this.toastie(data)
-    })
+      console.log('PUT SOCKET', data);
+      let currentEtag = this.stateService.getEtag();
+      //this.invalidateCache();
+      this.notify(`Todo Updated, refreshing cache from ETag ${currentEtag}`);
+    });
+  }
+
+  doSomething():string{
+    return 'something';
   }
 
   getTodos(skip: number, take: number): Observable<Todo[]> {
@@ -67,8 +85,13 @@ export class TodoService {
       .catch(this.handleError);
   }
 
-  private invalidatedCache() {
+  private invalidateCache(){
     this.stateService.setEtag('');
+    this.stateService.setTodos([]);
+  }
+
+  private notify(message: string) {
+    this.cacheUpdatedEvent.emit({message});
   }
 
   private cacheData(res: Response) {
@@ -90,6 +113,7 @@ export class TodoService {
         return a.priority - b.priority;
       });
   }
+
   private handleError(error: any) {
     let errMsg = error.message || error.statusText || 'Server error';
     console.error(errMsg); // log to console instead

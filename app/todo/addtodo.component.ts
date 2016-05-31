@@ -21,8 +21,7 @@ import {Todo} from '../common/todo.model'
      {{ alert?.msg }}
   </alert>
   `,
-    directives: [AlertComponent],
-    providers: [TodoService]
+    directives: [AlertComponent]
 })
 
 export class AddTodoComponent {
