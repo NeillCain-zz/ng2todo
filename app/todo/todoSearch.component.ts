@@ -9,8 +9,8 @@ import {EditTodoComponent} from './todoEdit.component'
 	selector: 'todo-search',
 	directives: [FORM_DIRECTIVES, EditTodoComponent, AddTodoComponent],
 	template: `
-	<input [ngFormControl]="skipBox" placeholder="SKIP" />
-  <input [ngFormControl]="takeBox" placeholder="TAKE" />
+	<input [ngFormControl]="skipBox" placeholder="SKIP" [(ngModel)]='skip' />
+  <input [ngFormControl]="takeBox" placeholder="TAKE" [(ngModel)]='take' />
 	<ul class="list-group">
     <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
       <span>{{todo.note}} </span>
@@ -24,27 +24,30 @@ import {EditTodoComponent} from './todoEdit.component'
 	`
 })
 export class TodoSearchComponent {
-  private skipBox:Control = new Control();
-  private takeBox:Control = new Control();
-	private skip:number = 0;
-	private take:number = 10;
+  private skipBox: Control = new Control();
+  private takeBox: Control = new Control();
+	private skip: number = 0;
+	private take: number = 10;
 
-  @Input() todos:Todo[];
+  @Input() todos: Todo[];
   @Output() searchEvent: EventEmitter<any> = new EventEmitter();
 
 	selectedTodo: Todo;
 
 	constructor() {
-		this.skipBox.valueChanges
-			.combineLatest(this.takeBox.valueChanges, (skip, take) => ({skip, take}))
-			.subscribe(x => this.searchEvent.emit(x));
+		this.skipBox.valueChanges.startWith(this.skip)
+			.combineLatest(this.takeBox.valueChanges.startWith(this.take), (skip, take) => ({ skip, take }))
+			.subscribe(x => {
+				console.log('search event');
+				this.searchEvent.emit(x);
+			})
   }
 
-	onEditDone(foo: any){
+	onEditDone(foo: any) {
 		this.selectedTodo = undefined;
 	}
 
-	onSelect(todo: Todo){
+	onSelect(todo: Todo) {
 		this.selectedTodo = todo;
 	}
 }

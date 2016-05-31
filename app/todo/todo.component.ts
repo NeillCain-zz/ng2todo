@@ -45,7 +45,6 @@ export class TodoComponent implements OnInit {
     });
 
     this.todoSearchComponent.searchEvent
-      .startWith({ take: 10, skip: 0 })
       .flatMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
       .subscribe(result => { this.todos = result }, error => this.errorMessage = error)
 
