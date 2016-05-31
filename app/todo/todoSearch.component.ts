@@ -37,10 +37,7 @@ export class TodoSearchComponent {
 	constructor() {
 		this.skipBox.valueChanges.startWith(this.skip)
 			.combineLatest(this.takeBox.valueChanges.startWith(this.take), (skip, take) => ({ skip, take }))
-			.subscribe(x => {
-				console.log('search event');
-				this.searchEvent.emit(x);
-			})
+			.subscribe(x => this.searchEvent.emit(x))
   }
 
 	onEditDone(foo: any) {
