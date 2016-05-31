@@ -5,7 +5,6 @@ import {Todo} from '../common/todo.model'
 import {AddTodoComponent} from './addtodo.component'
 import {TodoSearchComponent } from './todoSearch.component'
 import {Observable, Observer} from 'rxjs/Rx';
-import * as sio from 'socket.io-client';
 import { ToastyService, Toasty, ToastOptions, ToastData } from 'ng2-toasty/ng2-toasty';
 import 'ng2-toasty/ng2-toasty.css';
 
@@ -29,20 +28,12 @@ export class TodoComponent implements OnInit {
   private title: string;
   private errorMessage: string;
   private todos: Todo[] = [];
-  private socket: SocketIOClient.Socket;
 
   constructor(private todoService: TodoService, private toastyService:ToastyService) {
   }
 
   ngOnInit() {
     this.title = 'Todo List'
-    this.socket = sio.connect('ws://todo.kungfoobar.me');
-    this.socket.on('post', data => {
-      this.toastie(data)
-    })
-    this.socket.on('put', data => {
-      this.toastie(data)
-    })
   }
 
   ngAfterViewInit() {

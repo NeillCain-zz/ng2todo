@@ -4,34 +4,44 @@ import { Todo } from './todo.model';
 import { ReplaySubject, Observable } from "rxjs/Rx";
 import { Headers, RequestOptions } from '@angular/http';
 import { StateService } from './state.service'
+import * as sio from 'socket.io-client';
 
 @Injectable()
 export class TodoService {
   private todoUrl = 'http://todo.kungfoobar.me/todo';
   private _todos: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
-  
-  constructor(private http: Http, private stateService: StateService) { }
-    
+  private socket: SocketIOClient.Socket;
+
+  constructor(private http: Http, private stateService: StateService) {
+    this.socket = sio.connect('ws://todo.kungfoobar.me');
+    this.socket.on('post', data => {
+      //this.toastie(data) -- NEED TO EMIT AN EVENT HERE FOR ANY UI PROMPTS TO BE RENDERED OUT BY COMPONENT
+    })
+    this.socket.on('put', data => {
+      //this.toastie(data)
+    })
+  }
+
   getTodos(skip: number, take: number): Observable<Todo[]> {
-    this._todos = this._todos.isUnsubscribed ? new ReplaySubject<Todo[]>() : this._todos;
+    this._todos = this._todos.isUnsubscribed ? new ReplaySubject<Todo[]>(1) : this._todos;
     let todos = this.stateService.getTodos();
-    if(todos.length > 0){
-      todos = this.queryTodos(todos, skip, take)      
-      this._todos.next(todos);            
+    if (todos.length > 0) {
+      todos = this.queryTodos(todos, skip, take)
+      this._todos.next(todos);
     }
-    else{
+    else {
       let headers = new Headers();
       headers.append('If-None-Match', this.stateService.getEtag());
       if (!this._todos.observers.length) {
-            this.http.get(this.todoUrl)
-              .subscribe(
-                res => {
-                  let todos = this.cacheData(res)
-                  todos = this.queryTodos(todos, skip, take)
-                  this._todos.next(todos);
-                },
-                error => this._todos.error(error));
-        }            
+        this.http.get(this.todoUrl)
+          .subscribe(
+          res => {
+            let todos = this.cacheData(res)
+            todos = this.queryTodos(todos, skip, take)
+            this._todos.next(todos);
+          },
+          error => this._todos.error(error));
+      }
     }
     return this._todos;
   }
@@ -47,7 +57,7 @@ export class TodoService {
       .catch(this.handleError);
   }
 
-  edit(todo: Todo){
+  edit(todo: Todo) {
     let body = JSON.stringify(todo);
     let headers = new Headers({ 'Content-Type': 'application/json' });
     headers.append('If-Match', todo.revision);
@@ -57,14 +67,18 @@ export class TodoService {
       .catch(this.handleError);
   }
 
+  private invalidatedCache() {
+    this.stateService.setEtag('');
+  }
+
   private cacheData(res: Response) {
     let todos = res.json();
     this.stateService.setEtag(res.headers.get('ETag') || '');
-    this.stateService.setTodos(todos);    
+    this.stateService.setTodos(todos);
     return todos;
   }
 
-  private queryTodos(todos: any, skip: number, take: number){
+  private queryTodos(todos: any, skip: number, take: number) {
     return todos.slice(skip, take)
       .map(function (todo) {
         todo.created = new Date(todo.created).toDateString();
