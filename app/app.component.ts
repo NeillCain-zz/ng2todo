@@ -67,7 +67,7 @@ h1#logo a {
 }
 
 .foo {
-  padding-top: 70px;
+  padding-top: 90px;
 }
   `],
   directives: [ROUTER_DIRECTIVES]
