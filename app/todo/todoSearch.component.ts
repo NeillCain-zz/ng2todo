@@ -13,11 +13,11 @@ import {EditTodoComponent} from './todoEdit.component'
 		<div class="row">
 			<div class="form-group col-sm-6" [ngClass]="{ 'has-danger' : !skip.valid }">
 				<label class="form-control-label" for="skip">Skip</label>
-				<input [ngFormControl]="skip" placeholder="SKIP" [(ngModel)]="skip1EventFireHack" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !skip.valid }">
+				<input #skipBar [ngFormControl]="skip" placeholder="SKIP" [(ngModel)]="skip1EventFireHack" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !skip.valid }">
 			</div>
 			<div class="form-group col-sm-6" [ngClass]="{ 'has-danger' : !take.valid }">
 				<label class="form-control-label" for="username">Take</label>
-				<input [ngFormControl]="take" placeholder="TAKE" [(ngModel)]="take1EventFireHack" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !take.valid }">
+				<input #takeFoo [ngFormControl]="take" placeholder="TAKE" [(ngModel)]="take1EventFireHack" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !take.valid }">
 			</div>
 		</div>
 	</form>
@@ -31,6 +31,10 @@ import {EditTodoComponent} from './todoEdit.component'
   </ul>
 	<hr>
 	<todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
+		<div class="row">
+		<div class="col-sm-6" style="height: 300px; background-color: red;" (mouseover)="onMouseOver($event, takeFoo, skipBar)">Click me</div>
+		<div class="col-sm-6" style="height: 300px; background-color: blue;" (mousemove)="onMouseMove($event, takeFoo, skipBar)">Click me</div>
+	</div>
 	`
 })
 export class TodoSearchComponent {
@@ -58,6 +62,14 @@ export class TodoSearchComponent {
       take: this.take,
     });
   }
+
+	onMouseOver(event, take, skip) {
+		console.log(event, take, skip);
+	}
+
+	onMouseMove(event, take, skip) {
+		console.log(event, take, skip);
+	}
 
 	onEditDone(foo: any) {
 		this.selectedTodo = undefined;
