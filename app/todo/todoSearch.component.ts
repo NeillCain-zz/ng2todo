@@ -13,11 +13,11 @@ import {EditTodoComponent} from './todoEdit.component'
 		<div class="row">
 			<div class="form-group col-sm-6" [ngClass]="{ 'has-danger' : !skip.valid }">
 				<label class="form-control-label" for="skip">Skip</label>
-				<input id="skip" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !skip.valid }" placeholder="SKIP" ngControl="skip">
+				<input [ngFormControl]="skip" placeholder="SKIP" [(ngModel)]="skip1EventFireHack" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !skip.valid }">
 			</div>
 			<div class="form-group col-sm-6" [ngClass]="{ 'has-danger' : !take.valid }">
 				<label class="form-control-label" for="username">Take</label>
-				<input id="take" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !take.valid }" placeholder="TAKE" ngControl="take">
+				<input [ngFormControl]="take" placeholder="TAKE" [(ngModel)]="take1EventFireHack" type="text" class="form-control" [ngClass]="{ 'form-control-danger' : !take.valid }">
 			</div>
 		</div>
 	</form>
@@ -37,6 +37,8 @@ export class TodoSearchComponent {
 	private searchForm: ControlGroup;
   private skip: Control = new Control('0', Validators.required);
   private take: Control = new Control('10', Validators.required);
+	private take1EventFireHack: number = 10;
+	private skip1EventFireHack: number = 0;
 
   @Input() todos: Todo[];
   @Output() searchEvent: EventEmitter<any> = new EventEmitter();
@@ -47,9 +49,9 @@ export class TodoSearchComponent {
 		this.skip.valueChanges.startWith(0)
 			.combineLatest(this.take.valueChanges.startWith(10), (skip, take) => ({ skip, take }))
 			.subscribe(x => {
-				console.log('search event');
+				console.log('search event fired', x);
 				this.searchEvent.emit(x)
-				})
+			})
 
 		this.searchForm = builder.group({
       skip: this.skip,
