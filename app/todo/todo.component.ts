@@ -45,7 +45,10 @@ export class TodoComponent implements OnInit {
       .switchMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
       .subscribe(result => { this.todos = result }, error => this.errorMessage = error)
 
-      this.cdr.detectChanges();
+    this.cdr.detectChanges();
+
+    //LOL UNIT TEST
+    //this.todoService.testtodos();
   }
 
   private toastie(notification) {
