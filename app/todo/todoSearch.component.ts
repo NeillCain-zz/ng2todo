@@ -50,8 +50,8 @@ export class TodoSearchComponent {
 	selectedTodo: Todo;
 
 	constructor(private builder: FormBuilder) {
-		this.skip.valueChanges.startWith(0)
-			.combineLatest(this.take.valueChanges.startWith(10), (skip, take) => ({ skip, take }))
+		this.skip.valueChanges.debounceTime(400).startWith(0)
+			.combineLatest(this.take.valueChanges.debounceTime(400).startWith(10), (skip, take) => ({ skip, take }))
 			.subscribe(x => {
 				console.log('search event fired', x);
 				this.searchEvent.emit(x)

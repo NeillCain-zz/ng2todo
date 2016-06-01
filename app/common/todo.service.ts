@@ -10,8 +10,9 @@ import * as sio from 'socket.io-client';
 @Injectable()
 export class TodoService {
   private todoUrl = 'http://todo.kungfoobar.me/todo';
-  private reload: boolean = false;
-  private _todos: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
+  private reload: boolean = true;
+  private _todoReplay: ReplaySubject<Todo[]> = new ReplaySubject<Todo[]>();
+  private _todos: Todo[]
   private socket: SocketIOClient.Socket;
   @Output() cacheUpdatedEvent: EventEmitter<ToastyMessage> = new EventEmitter<ToastyMessage>();
 
@@ -19,49 +20,47 @@ export class TodoService {
     this.socket = sio.connect('ws://todo.kungfoobar.me');
 
     this.socket.on('connect', data => {
-      console.log("socket connected");
+      this.notify('Connected to cache invalidation notifier');
     });
 
     this.socket.on('post', data => {
-      this.reload
+      this.reload = true;
       let currentEtag = this.stateService.getEtag();
-      this.notify('New Todo Created, refreshing');
+      this.notify('New Todo Created, refreshing from current ETag' + currentEtag);
     });
 
     this.socket.on('put', data => {
       this.reload = true;
       let currentEtag = this.stateService.getEtag();
-      this.notify('Todo Updated, refreshing ');
+      this.notify('Todo Updated, refreshing from current ETag' + currentEtag);
     });
   }
 
-  doSomething():string{
-    return 'something';
-  }
-
   getTodos(skip: number, take: number): Observable<Todo[]> {
-    console.log('get todos');
-    this._todos = this._todos.isUnsubscribed ? new ReplaySubject<Todo[]>(1) : this._todos;
+    this._todoReplay = this._todoReplay.isUnsubscribed ? new ReplaySubject<Todo[]>(1) : this._todoReplay;
     let todos = this.stateService.getTodos();
+    console.log('get todos', { skip, take, todos });
     if (todos.length > 0 && !this.reload) {
       todos = this.queryTodos(todos, skip, take)
-      this._todos.next(todos);
+      this._todoReplay.next(todos);
     }
     else {
-      let headers = new Headers();
-      if (!this._todos.observers.length) {
+      if (this.reload) {
         this.http.get(this.todoUrl)
           .subscribe(
           res => {
             this.reload = false;
             let todos = this.cacheData(res)
             todos = this.queryTodos(todos, skip, take)
-            this._todos.next(todos);
+            this._todoReplay.next(todos);
           },
-          error => this._todos.error(error));
+          error => {
+            console.log('ERROR retrieving todos', error)
+            this._todoReplay.error(error)
+          });
       }
     }
-    return this._todos;
+    return this._todoReplay;
   }
 
   addTodo(note: string, priority: number, status: string): Observable<Todo> {
@@ -86,7 +85,7 @@ export class TodoService {
   }
 
   private notify(message: string) {
-    this.cacheUpdatedEvent.emit({message});
+    this.cacheUpdatedEvent.emit({ message });
   }
 
   private cacheData(res: Response) {
@@ -97,17 +96,19 @@ export class TodoService {
     return todos;
   }
 
-  private queryTodos(todos: any, skip: number, take: number) {
-    return todos.slice(skip, take)
-      .map(function (todo) {
-        todo.created = new Date(todo.created).toDateString();
-        todo.revision = todo['_rev'];
-        todo.id = todo['_key'];
-        return todo;
-      })
-      .sort(function (a, b) {
+  private queryTodos(todos: Todo[], skip: number, take: number) {
+    var todos =
+      todos.sort(function (a, b) {
         return a.priority - b.priority;
-      });
+      })
+        .slice(skip, take)
+        .map(function (todo) {
+          todo.created = new Date(todo.created).toDateString();
+          todo.revision = todo['_rev'];
+          todo.id = todo['_key'];
+          return todo;
+        })
+    return todos;
   }
 
   private handleError(error: any) {

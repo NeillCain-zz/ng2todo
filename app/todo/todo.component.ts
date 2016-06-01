@@ -30,22 +30,19 @@ export class TodoComponent implements OnInit {
   private errorMessage: string;
   private todos: Todo[] = [];
 
-  constructor(private todoService: TodoService, private toastyService: ToastyService, private cdr: ChangeDetectorRef) {
-    console.log('constructing TODO component');
-  }
+  constructor(private todoService: TodoService, private toastyService: ToastyService, private cdr: ChangeDetectorRef) {    }
 
   ngOnInit() {
     this.title = 'Todo List'
   }
 
   ngAfterViewInit() {
-    this.toastie('initialised');
     this.todoService.cacheUpdatedEvent.subscribe(notification => {
       this.toastie(notification);
     });
 
     this.todoSearchComponent.searchEvent
-      .flatMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
+      .switchMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
       .subscribe(result => { this.todos = result }, error => this.errorMessage = error)
 
       this.cdr.detectChanges();

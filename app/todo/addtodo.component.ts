@@ -45,6 +45,9 @@ export class AddTodoComponent {
         this.todoService.addTodo(note, priority, status)
             .subscribe(
             todo => this.addAlert(todo),
-            error => this.errorMessage = error);
+            error => {
+                console.log('Error Adding Todo', error)
+                this.errorMessage = error
+                });
     }
 }
