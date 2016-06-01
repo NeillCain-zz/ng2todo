@@ -76,6 +76,6 @@ export class TodoSearchComponent {
 	}
 
 	onSelect(todo: Todo) {
-		this.selectedTodo = todo;
+		this.selectedTodo = Object.assign({}, todo);
 	}
 }
