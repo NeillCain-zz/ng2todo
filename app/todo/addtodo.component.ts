@@ -7,19 +7,21 @@ import {Todo} from '../common/todo.model'
 @Component({
     selector: 'addtodo',
     template: `
-  Add another one??????
-  <input placeholder="NOTE" #note />
-  <input placeholder="PRIORITY" #priority />
-  <input placeholder="STATUS" #status />
-  <button (click)="addTodo(note.value, priority.value, status.value);">
-    Add Todo
-  </button>
-  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-    <strong>{{errorMessage}}</strong>
-  </div>
-  <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
-     {{ alert?.msg }}
-  </alert>
+    <div class="row">
+        <h4>Add another one??????</h4>
+        <input placeholder="NOTE" #note />
+        <input placeholder="PRIORITY" #priority />
+        <input placeholder="STATUS" #status />
+        <button (click)="addTodo(note.value, priority.value, status.value);">
+            Add Todo
+        </button>
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+            <strong>{{errorMessage}}</strong>
+        </div>
+        <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
+            {{ alert?.msg }}
+        </alert>
+    </div>
   `,
     directives: [AlertComponent]
 })

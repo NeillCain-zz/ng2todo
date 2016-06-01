@@ -166,8 +166,7 @@ export class TodoService {
       this.http.get(this.todoUrl, {headers})
         .subscribe(
         res => {
-          var eTag = res.headers.get('x-etag');
-          console.log('give me head', res.headers);
+          var eTag = res.headers.get('ETag');
           console.log('etag', eTag);
           this.stateService.setEtag(eTag);
           let todos = this.cacheData(res.json());
@@ -231,7 +230,7 @@ export class TodoService {
 
   private handleError(error: any) {
     let errMsg = error.message || error.statusText || 'Server error';
-    console.error(errMsg); // log to console instead
+    console.error(error);
     return Observable.throw(errMsg);
   }
 }

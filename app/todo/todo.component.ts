@@ -17,6 +17,9 @@ import 'ng2-toasty/ng2-toasty.css';
     <h1>{{title}}</h1>
   </div>
   <hr>
+  <div class="row">
+  <button (click)="triggerSearch($event)" type="button" class="btn btn-primary-outline">Refresh</button>
+  </div>
   <addtodo></addtodo>
   <todo-search [todos]="todos"></todo-search>
   <ng2-toasty></ng2-toasty>
@@ -34,6 +37,11 @@ export class TodoComponent implements OnInit {
 
   ngOnInit() {
     this.title = 'Todo List'
+  }
+
+  private triggerSearch(event){
+    console.log('ffs',event)
+    //this.todoSearchComponent.searchEvent.publish()
   }
 
   ngAfterViewInit() {
