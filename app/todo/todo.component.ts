@@ -21,8 +21,8 @@ import 'ng2-toasty/ng2-toasty.css';
   `],
   template: `
   <div class="page-header row m-t-1">
-    <div class="col-sm-6"><h1>{{title}}</h1></div>
-    <div class="btn-group btn-group-lg col-sm-6" role="group" aria-label="toolbar">
+    <div class="col-lg-9"><h1>{{title}}</h1></div>
+    <div class="btn-group btn-group-lg col-lg-3" role="group" aria-label="toolbar">
       <button (click)="wantsToAdd = !wantsToAdd" type="button" class="btn btn-secondary-outline">Add</button>
       <button (click)="triggerSearch($event)" type="button" class="btn btn-secondary-outline">Refresh</button>
     </div>
