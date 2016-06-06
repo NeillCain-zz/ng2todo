@@ -88,10 +88,11 @@ module.exports = {
         test: /\.js$/,
         loader: 'source-map-loader',
         exclude: [
-        // these packages have problems with their sourcemaps
-        helpers.root('node_modules/rxjs'),
-        helpers.root('node_modules/@angular')
-      ]}
+          // these packages have problems with their sourcemaps
+          helpers.root('node_modules/rxjs'),
+          helpers.root('node_modules/@angular')
+        ]
+      }
 
     ],
 
@@ -126,17 +127,17 @@ module.exports = {
       },
 
       {
-            test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-            loader: 'file?name=images/[name].[ext]'
-        }, {
-            test: /\.css$/,
-            exclude: helpers.root('app'),
-            loader: ExtractTextPlugin.extract('style', 'css?sourceMap')
-        }, {
-            test: /\.(html|css)$/,
-            include: helpers.root('global_styles', 'app'),
-            loader: 'raw-loader'
-        }
+        test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
+        loader: 'file?name=images/[name].[ext]'
+      }, {
+        test: /\.css$/,
+        exclude: helpers.root('app'),
+        loader: ExtractTextPlugin.extract('style', 'css?sourceMap')
+      }, {
+        test: /\.(html|css)$/,
+        include: helpers.root('global_styles', 'app'),
+        loader: 'raw-loader'
+      }
 
     ],
 
@@ -191,11 +192,7 @@ module.exports = {
         'HMR': false,
       }
     }),
-
-        new ExtractTextPlugin('[name].css')
-
-
-
+    new ExtractTextPlugin('[name].css')
   ],
 
   /**
