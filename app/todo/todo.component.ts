@@ -6,6 +6,7 @@ import {AddTodoComponent} from './addtodo.component'
 import {TodoSearchComponent } from './todoSearch.component'
 import {ToastyMessage} from '../common/toastyMessage.model'
 import {Observable, Observer} from 'rxjs/Rx';
+import {EditTodoComponent} from './todoEdit.component'
 import { ToastyService, Toasty, ToastOptions, ToastData } from 'ng2-toasty/ng2-toasty';
 
 import 'ng2-toasty/ng2-toasty.css';
@@ -21,8 +22,9 @@ import 'ng2-toasty/ng2-toasty.css';
   <button (click)="triggerSearch($event)" type="button" class="btn btn-primary-outline">Refresh</button>
   </div>
   <addtodo></addtodo>
-  <todo-search [showDivs]="false"></todo-search>
+  <hr />
   <todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
+  <todo-search [showDivs]="false"></todo-search>
   <ul class="list-group">
     <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
       <span>{{todo.note}} </span>
@@ -33,7 +35,7 @@ import 'ng2-toasty/ng2-toasty.css';
   </ul>
   <ng2-toasty></ng2-toasty>
   <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
-  directives: [AddTodoComponent, TodoSearchComponent, FORM_DIRECTIVES, Toasty]
+  directives: [AddTodoComponent, EditTodoComponent, TodoSearchComponent, FORM_DIRECTIVES, Toasty]
 })
 
 export class TodoComponent implements OnInit {
@@ -43,14 +45,14 @@ export class TodoComponent implements OnInit {
   private todos: Todo[] = [];
   private selectedTodo: Todo;
 
-  constructor(private todoService: TodoService, private toastyService: ToastyService, private cdr: ChangeDetectorRef) {    }
+  constructor(private todoService: TodoService, private toastyService: ToastyService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.title = 'Todo List'
   }
 
-  private triggerSearch(event){
-    console.log('ffs',event)
+  private triggerSearch(event) {
+    console.log('ffs', event)
     //this.todoSearchComponent.searchEvent.publish()
   }
 
@@ -70,12 +72,12 @@ export class TodoComponent implements OnInit {
   }
 
   onSelect(todo: Todo) {
-		this.selectedTodo = Object.assign({}, todo);
-	}
+    this.selectedTodo = Object.assign({}, todo);
+  }
 
   onEditDone(foo: any) {
-		this.selectedTodo = undefined;
-	}
+    this.selectedTodo = undefined;
+  }
 
 
 

@@ -3,11 +3,10 @@ import {Component, Output, Input, EventEmitter} from '@angular/core';
 import {Todo} from '../common/todo.model';
 import {AddTodoComponent} from './addtodo.component'
 import {Observable} from 'rxjs/Rx';
-import {EditTodoComponent} from './todoEdit.component'
 
 @Component({
 	selector: 'todo-search',
-	directives: [FORM_DIRECTIVES, EditTodoComponent, AddTodoComponent],
+	directives: [FORM_DIRECTIVES, AddTodoComponent],
 	template: `
 	<form [ngFormModel]="searchForm">
 		<div class="row">
