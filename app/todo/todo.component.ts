@@ -64,7 +64,7 @@ export class TodoComponent implements OnInit {
     });
 
     this.todoSearchComponent.searchEvent
-      .switchMap(searchEvent => this.todoService.getTodos(searchEvent.skip, searchEvent.take))
+      .switchMap(searchEvent => this.todoService.getTodos(searchEvent))
       .subscribe(result => { this.todos = result }, error => this.errorMessage = error)
 
     this.cdr.detectChanges();

@@ -5,6 +5,7 @@ import { ToastyMessage } from './toastyMessage.model'
 import { ReplaySubject, Observable } from "rxjs/Rx";
 import { Headers, RequestOptions } from '@angular/http';
 import { StateService } from './state.service'
+import {TodoSearchEvent} from '../common/todoSearchEvent.model'
 import * as sio from 'socket.io-client';
 
 @Injectable()
@@ -151,13 +152,13 @@ export class TodoService {
       });
   }
 
-  getTodos(skip: number, take: number): Observable<Todo[]> {
+  getTodos(event: TodoSearchEvent): Observable<Todo[]> {
     let todos = this.stateService.getTodos();
-    console.log('get todos', { skip, take, todos });
+    console.log('get todos', event);
 
     this._todoReplay = this._todoReplay.isUnsubscribed ? new ReplaySubject<Todo[]>(1) : this._todoReplay;
     if (todos.length > 0) {
-      todos = this.queryTodos(todos, skip, take)
+      todos = this.queryTodos(todos, event)
       this._todoReplay.next(todos);
     }
     else {
@@ -170,7 +171,7 @@ export class TodoService {
           console.log('etag', eTag);
           this.stateService.setEtag(eTag);
           let todos = this.cacheData(res.json());
-          todos = this.queryTodos(todos, skip, take)
+          todos = this.queryTodos(todos, event)
           this._todoReplay.next(todos);
         },
         error => {
@@ -213,12 +214,13 @@ export class TodoService {
     return todos;
   }
 
-  private queryTodos(todos: Todo[], skip: number, take: number) {
+  private queryTodos(todos: Todo[], event: TodoSearchEvent) {
     var todos =
-      todos.sort(function (a, b) {
-        return a.priority - b.priority;
-      })
-        .slice(skip, take)
+        todos.sort(function (a, b) {
+          return a.priority - b.priority;
+        })
+        .filter(todo => todo.priority >= event.priorityHigherThan)
+        .slice(event.skip, event.take)
         .map(function (todo) {
           todo.created = new Date(todo.created).toDateString();
           todo.revision = todo['_rev'];
