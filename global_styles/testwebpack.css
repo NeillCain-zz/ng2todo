@@ -1,3 +1,4 @@
 .foo {
-    background-color: #ccc;
+    border-top: 2px solid #60c;
+    background-color: #fff;
 }

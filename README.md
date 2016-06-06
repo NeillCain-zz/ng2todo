@@ -5,6 +5,8 @@ This simple Angular 2 Todo list app is using the brand new router.
 It demonstrates how to build components, configure routes, inject services, and use the `@Input` decorator to bind properties to components.
 
 We're using it as the client app to consume our synchronisation service...
+## TODO
+* The todo service is registered with the todo route component injector and gets created each time that route is activated causing multiple sockets connections to open!
 
 ## Dependencies
 - You must have `node v >= 4.0` and `npm` installed (via `brew install node` or [NodeJS.org](https://nodejs.org/en/));

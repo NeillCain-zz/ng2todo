@@ -13,24 +13,30 @@ import 'ng2-toasty/ng2-toasty.css';
 
 @Component({
   selector: 'todo',
+  styles: [`
+    li.important {
+      border-left: 3px solid red;
+      border-right: 3px solid red;
+    }
+  `],
   template: `
-  <div class="page-header m-t-1">
-    <h1>{{title}}</h1>
+  <div class="page-header row m-t-1">
+    <div class="col-sm-6"><h1>{{title}}</h1></div>
+    <div class="btn-group btn-group-lg col-sm-6" role="group" aria-label="toolbar">
+      <button (click)="wantsToAdd = !wantsToAdd" type="button" class="btn btn-secondary-outline">Add</button>
+      <button (click)="triggerSearch($event)" type="button" class="btn btn-secondary-outline">Refresh</button>
+    </div>
   </div>
   <hr>
-  <div class="row">
-  <button (click)="triggerSearch($event)" type="button" class="btn btn-primary-outline">Refresh</button>
-  </div>
-  <addtodo></addtodo>
-  <hr />
+  <addtodo *ngIf="wantsToAdd"></addtodo>
   <todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
   <todo-search [showDivs]="false"></todo-search>
   <ul class="list-group">
-    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
+    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{important : todo.priority > 10}">
       <span>{{todo.note}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.status}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
+      <span class="label label-default label-pill">{{todo.created}} </span>
+      <span class="label label-default label-pill">{{todo.priority}}</span>
+      <span class="label pull-xs-right" [ngClass]= "{'label-success' : todo.status === 'Completed'}">Completed</span>
     </li>
   </ul>
   <ng2-toasty></ng2-toasty>
@@ -41,6 +47,7 @@ import 'ng2-toasty/ng2-toasty.css';
 export class TodoComponent implements OnInit {
   @ViewChild(TodoSearchComponent) todoSearchComponent: TodoSearchComponent;
   private title: string;
+  private wantsToAdd: boolean = false;
   private errorMessage: string;
   private todos: Todo[] = [];
   private selectedTodo: Todo;
@@ -49,11 +56,6 @@ export class TodoComponent implements OnInit {
 
   ngOnInit() {
     this.title = 'Todo List'
-  }
-
-  private triggerSearch(event) {
-    console.log('ffs', event)
-    //this.todoSearchComponent.searchEvent.publish()
   }
 
   ngAfterViewInit() {
@@ -79,7 +81,10 @@ export class TodoComponent implements OnInit {
     this.selectedTodo = undefined;
   }
 
-
+  private triggerSearch(event) {
+    console.log('ffs how do you search again', event)
+    //this.todoSearchComponent.searchEvent.publish()
+  }
 
   private toastie(notification) {
     let toastOptions: ToastOptions = {
