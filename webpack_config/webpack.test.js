@@ -156,7 +156,7 @@ module.exports = {
        */
       {
         test: /\.(js|ts)$/, loader: 'istanbul-instrumenter-loader',
-        include: helpers.root('src'),
+        include: helpers.root('app'),
         exclude: [
           /\.(e2e|spec)\.ts$/,
           /node_modules/
