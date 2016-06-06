@@ -32,10 +32,10 @@ import 'ng2-toasty/ng2-toasty.css';
   <todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
   <todo-search [showDivs]="false"></todo-search>
   <ul class="list-group">
-    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{important : todo.priority > 10}">
+    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{important : todo.priority > 5}">
       <span>{{todo.note}} </span>
-      <span class="label label-default label-pill">{{todo.created}} </span>
-      <span class="label label-default label-pill">{{todo.priority}}</span>
+      <span class="label label-default pull-xs-right label-pill">{{todo.created}} </span>
+      <span class="label label-default pull-xs-right label-pill">{{todo.priority}}</span>
       <span class="label pull-xs-right" [ngClass]= "{'label-success' : todo.status === 'Completed'}">Completed</span>
     </li>
   </ul>
