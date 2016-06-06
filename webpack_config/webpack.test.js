@@ -2,6 +2,8 @@
  * @author: @AngularClass
  */
 
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 const helpers = require('./helpers');
 
 /**
@@ -123,28 +125,18 @@ module.exports = {
         exclude: [/\.e2e\.ts$/]
       },
 
-      /**
-       * Json loader support for *.json files.
-       *
-       * See: https://github.com/webpack/json-loader
-       */
-      { test: /\.json$/, loader: 'json-loader', exclude: [helpers.root('src/index.html')] },
-
-      /**
-       * Raw loader support for *.css files
-       * Returns file content as string
-       *
-       * See: https://github.com/webpack/raw-loader
-       */
-      { test: /\.css$/, loader: 'raw-loader', exclude: [helpers.root('src/index.html')] },
-
-      /**
-       * Raw loader support for *.html
-       * Returns file content as string
-       *
-       * See: https://github.com/webpack/raw-loader
-       */
-      { test: /\.html$/, loader: 'raw-loader', exclude: [helpers.root('src/index.html')] }
+      {
+            test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
+            loader: 'file?name=images/[name].[ext]'
+        }, {
+            test: /\.css$/,
+            exclude: helpers.root('app'),
+            loader: ExtractTextPlugin.extract('style', 'css?sourceMap')
+        }, {
+            test: /\.(html|css)$/,
+            include: helpers.root('global_styles', 'app'),
+            loader: 'raw-loader'
+        }
 
     ],
 
@@ -199,6 +191,9 @@ module.exports = {
         'HMR': false,
       }
     }),
+
+        new ExtractTextPlugin('[name].css')
+
 
 
   ],
