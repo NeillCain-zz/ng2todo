@@ -21,7 +21,16 @@ import 'ng2-toasty/ng2-toasty.css';
   <button (click)="triggerSearch($event)" type="button" class="btn btn-primary-outline">Refresh</button>
   </div>
   <addtodo></addtodo>
-  <todo-search [todos]="todos"></todo-search>
+  <todo-search [showDivs]="false"></todo-search>
+  <todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
+  <ul class="list-group">
+    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
+      <span>{{todo.note}} </span>
+      <span class="label label-default label-pill pull-xs-right">{{todo.status}} </span>
+      <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
+      <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
+    </li>
+  </ul>
   <ng2-toasty></ng2-toasty>
   <div class="error" *ngIf="errorMessage">{{errorMessage}}</div>`,
   directives: [AddTodoComponent, TodoSearchComponent, FORM_DIRECTIVES, Toasty]
@@ -32,6 +41,7 @@ export class TodoComponent implements OnInit {
   private title: string;
   private errorMessage: string;
   private todos: Todo[] = [];
+  private selectedTodo: Todo;
 
   constructor(private todoService: TodoService, private toastyService: ToastyService, private cdr: ChangeDetectorRef) {    }
 
@@ -58,6 +68,16 @@ export class TodoComponent implements OnInit {
     //LOL UNIT TEST
     //this.todoService.testtodos();
   }
+
+  onSelect(todo: Todo) {
+		this.selectedTodo = Object.assign({}, todo);
+	}
+
+  onEditDone(foo: any) {
+		this.selectedTodo = undefined;
+	}
+
+
 
   private toastie(notification) {
     let toastOptions: ToastOptions = {

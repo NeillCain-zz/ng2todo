@@ -21,17 +21,7 @@ import {EditTodoComponent} from './todoEdit.component'
 			</div>
 		</div>
 	</form>
-	<ul class="list-group">
-    <li (click)="onSelect(todo)" *ngFor="let todo of todos" class="list-group-item" [ngClass]= "{foo : todo.status === 'Completed'}">
-      <span>{{todo.note}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.status}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.created}} </span>
-      <span class="label label-default label-pill pull-xs-right">{{todo.priority}}</span>
-    </li>
-  </ul>
-	<hr>
-	<todo-edit (doneEvent)="onEditDone($event)" *ngIf="selectedTodo" [todo]="selectedTodo"></todo-edit>
-		<div class="row">
+	<div *ngIf="showDivs" class="row">
 		<div class="col-sm-6" style="height: 300px; background-color: red;" (mouseover)="onMouseOver($event, takeFoo, skipBar)">Click me</div>
 		<div class="col-sm-6" style="height: 300px; background-color: blue;" (mousemove)="onMouseMove($event, takeFoo, skipBar)">Click me</div>
 	</div>
@@ -44,10 +34,8 @@ export class TodoSearchComponent {
 	private take1EventFireHack: number = 10;
 	private skip1EventFireHack: number = 0;
 
-  @Input() todos: Todo[];
+	@Input() showDivs: boolean = false;
   @Output() searchEvent: EventEmitter<any> = new EventEmitter();
-
-	selectedTodo: Todo;
 
 	constructor(private builder: FormBuilder) {
 		this.skip.valueChanges.debounceTime(400).startWith(0)
@@ -69,13 +57,5 @@ export class TodoSearchComponent {
 
 	onMouseMove(event, take, skip) {
 		console.log(event, take, skip);
-	}
-
-	onEditDone(foo: any) {
-		this.selectedTodo = undefined;
-	}
-
-	onSelect(todo: Todo) {
-		this.selectedTodo = Object.assign({}, todo);
 	}
 }
