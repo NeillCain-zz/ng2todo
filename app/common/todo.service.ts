@@ -216,12 +216,12 @@ export class TodoService {
 
   private queryTodos(todos: Todo[], event: TodoSearchEvent) {
     var todos =
-        todos.sort(function (a, b) {
+        todos.sort((a, b) => {
           return a.priority - b.priority;
         })
         .filter(todo => todo.priority >= event.priorityHigherThan)
         .slice(event.skip, event.take)
-        .map(function (todo) {
+        .map((todo) => {
           todo.created = new Date(todo.created).toDateString();
           todo.revision = todo['_rev'];
           todo.id = todo['_key'];
