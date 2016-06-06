@@ -7,7 +7,7 @@ import {
 
 import { TodoComponent } from './todo.component';
 
-describe('Todo Component', () => {
+xdescribe('Todo Component', () => {
   it('should be named `HomeComponent`', () => {
     expect(TodoComponent['name']).toBe('TodoComponent');
   });

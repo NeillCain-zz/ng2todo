@@ -1,9 +1,17 @@
-import { describe, it, expect } from '@angular/core/testing';
-
+import {
+  it,
+  inject,
+  describe,
+  beforeEachProviders,
+  expect
+} from '@angular/core/testing';
 import { AppComponent } from './app.component';
-
-describe('AppComponent', () => {
-  it('should be a function', () => {
-    expect(typeof AppComponent).toBe('function');
-  });
+describe('App', () => {
+  beforeEachProviders(() => [
+    AppComponent
+  ]);
+  it('should work', inject([AppComponent], (app: AppComponent) => {
+    // Add real test here
+    expect(2).toBe(2);
+  }));
 });
